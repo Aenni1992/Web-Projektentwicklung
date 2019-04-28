@@ -17,6 +17,8 @@ import {LoginComponent } from './login/login.component';
 import {AuthService} from "./shares/authentication.service";
 import {TokenInterceptorService} from "./shares/token-interceptor.service";
 import {JwtInterceptorService} from "./shares/jwt-interceptor.service";
+import { BookBasketComponent } from './book-basket/book-basket.component';
+import { BookOrderComponent } from './book-order/book-order.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import {JwtInterceptorService} from "./shares/jwt-interceptor.service";
     HomeComponent,
     BookFormComponent,
     SearchComponent,
-    LoginComponent
+    LoginComponent,
+    BookBasketComponent,
+    BookOrderComponent
   ],
   imports: [
     BrowserModule, AppRoutingModule, HttpClientModule, ReactiveFormsModule, DateValueAccessorModule

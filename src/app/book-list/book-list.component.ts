@@ -18,4 +18,24 @@ export class BookListComponent implements OnInit {
     this.bs.getAll().subscribe(res => this.books = res);
     }
 
+    addToBasket(book:Book) {
+        // Add item to local storage
+
+
+        // Local storage holen ==> return string
+        const basketString = localStorage.getItem('basket');
+        // wenn was da
+        // umwandeln
+
+        const basket = basketString && basketString.length > 0 ? JSON.parse(basketString) : [];
+
+        // hier array
+
+        // schauen ob bookorder mit bookid existiert wenn ja amount erhöhen sonst appenden
+        basket.push({isbn: book.isbn, amount:1})
+
+        const newBasketString = JSON.stringify(basket);
+        // zurückspeichern
+        localStorage.setItem('basket', newBasketString)
+    }
 }

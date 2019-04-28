@@ -7,10 +7,11 @@ import {Book} from "../shares/book";
   styles: []
 })
 export class BookListItemComponent implements OnInit {
-  @Input() book: Book;   //Input sagt es ist nicht eine normalte Variable sondern das es von außen ein Buch gibt
+  @Input() book: Book;   //Input sagt es ist nicht eine normale Variable sondern das es von außen ein Buch gibt
   constructor() { }
 
   ngOnInit() {
   }
+
 
 }

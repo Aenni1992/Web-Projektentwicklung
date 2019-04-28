@@ -21,9 +21,9 @@ export class AppComponent{
 
   getLoginLabel(){
     if(this.isLogedIn()){
-      return "Logout"
+      return "LOGOUT"
     } else {
-        return "Login"
+        return "LOGIN"
     }
   }
 }

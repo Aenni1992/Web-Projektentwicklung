@@ -1,0 +1,24 @@
+<div class="ui middle aligned selection divided list">
+  <ng-container *ngFor="let book of booksOrdered" >
+  <a class="bs-book-list-item item"
+     [book]="book"
+     [routerLink]="book.isbn" >
+  </a>
+    <button class="ui tiny blue labeled icon button"
+            (click)="removeItemFromBasket(book)" >
+      <i class="remove icon"></i>Buch entfernen
+    </button>
+  </ng-container>
+
+  <ng-container>
+    <div>
+  <button class="ui tiny yellow labeled icon button"
+          (click)="addToOrder()" >
+    <i class="icon"></i>Bestellen
+  </button>
+    </div>
+  </ng-container>
+
+</div>
+
+

@@ -1,6 +1,9 @@
 <div class="ui middle aligned selection divided list">
-  <a class="bs-book-list-item item"
-     *ngFor="let book of books" [book]="book"
-     [routerLink]="book.isbn" >
-  </a>
+  <ng-container *ngFor="let book of books">
+    <a class="bs-book-list-item item"
+       [book]="book"
+       [routerLink]="book.isbn" >
+    </a>
+    <button (click)="addToBasket(book)">Add to Basket</button>
+  </ng-container>
 </div>

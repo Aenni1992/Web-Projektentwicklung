@@ -1,8 +1,11 @@
-<div class="ui {{isLogedIn()?'four':'three'}} item tabs menu">
+<div class="ui {{isLogedIn()?'six':'four'}} item tabs menu">
   <a routerLink="home" routerLinkActive="active" class="item">HOME</a>
-  <a routerLink="books" routerLinkActive="active" class="item">BÜCHER</a>   <!-- a-tag nicht mit href, sondern mit routerLink verlinken-->
+  <a routerLink="books" routerLinkActive="active" class="item">BÜCHER</a><!-- a-tag nicht mit href, sondern mit routerLink verlinken-->
+  <a routerLink="basket" routerLinkActive="active" class="item">WARENKORB</a>
+  <a *ngIf="isLogedIn()" routerLink="order" routerLinkActive="active" class="item">BESTELLUNG</a>
   <a *ngIf="isLogedIn()" routerLink="admin" routerLinkActive="active" class="item">ADMINISTRATION</a>
   <a routerLink="login" routerLinkActive="active" class="item">{{getLoginLabel()}}</a>
+
 </div>
 <router-outlet></router-outlet>  <!-- durch die Taps werden die Komponenten angezeigt-->
 

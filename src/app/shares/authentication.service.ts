@@ -12,7 +12,8 @@ interface User {
         email: string,
         id: number,
         name: string,
-        updated_at: Date
+        updated_at: Date,
+        admin:boolean
     }
 }
 
@@ -37,6 +38,7 @@ export class AuthService {
 
     public getCurrentUserId(){
         return Number.parseInt(localStorage.getItem('userId'));
+
     }
 
     public setLocalStorage(token: string) {
@@ -46,7 +48,8 @@ export class AuthService {
         console.log(decodedToken);
         console.log(decodedToken.user.id);
         localStorage.setItem('token', token);
-        localStorage.setItem('userId', decodedToken.user.id);   //.isAdmin
+        localStorage.setItem('userId', decodedToken.user.id);
+        localStorage.setItem('admin', decodedToken.user.admin); //.isAdmin
     }
 
     logout() {
@@ -57,7 +60,28 @@ export class AuthService {
     }
 
     public isLoggedIn() {
-        return !isNullOrUndefined(localStorage.getItem("token"));
+        if(!isNullOrUndefined(localStorage.getItem("token"))){
+            let token : string  = localStorage.getItem("token");
+            const decodedToken = decode(token);
+            let expirationDate:Date = new Date(0);
+            expirationDate.setUTCSeconds(decodedToken.exp);
+            if(expirationDate < new Date()){
+                console.log("token expired");
+                localStorage.removeItem("token");
+                return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // public isLoggedIn() {
+   //     return !isNullOrUndefined(localStorage.getItem("token"));
+   // }
+
+    public isAdmin(){
+        return !isNullOrUndefined(localStorage.getItem("admin"));
     }
 
     isLoggedOut() {

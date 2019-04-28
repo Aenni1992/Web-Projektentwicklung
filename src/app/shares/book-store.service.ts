@@ -3,6 +3,7 @@ import { Author, Book, Image } from '../shares/book';
 import {HttpClient} from "@angular/common/http";
 import {Observable, throwError} from "rxjs";
 import {catchError, retry} from "rxjs/internal/operators";
+import {Order} from "./order";
 
 @Injectable({
   providedIn: 'root'
@@ -51,6 +52,11 @@ export class BookStoreService {
   private errorHandler(error:Error | any): Observable<any>{
       return throwError(error);
   }
+
+    createOrder (order:Order) :Observable<any>{   //any --> irgendein Datentyp wird aufgerufen
+        return this.http.post(`${this.api}/order`, order).
+        pipe(retry(3)).pipe(catchError(this.errorHandler));
+    }
 }
 
 
