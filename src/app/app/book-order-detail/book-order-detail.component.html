@@ -1,0 +1,60 @@
+<div class="ui grid" *ngIf="order">
+
+  <div class="twelve wide column">
+    <!--<h1 class="ui header">{{ order.books }}</h1> -->
+    <h3 class="ui header">User: {{ order?.user_id }}</h3>
+    <div class="ui divider"></div>
+    <div class="ui grid">
+      <div class="five wide column">
+        <h4 class="ui header">Bücherliste {{order?.order_items.book}}</h4>
+        <div *ngFor="let item of order.order_items">
+        Buch: {{ item.book_id}}, Menge: {{ item.amount }}
+       </div>
+      </div>
+      <div class="five wide column">
+        <h4 class="ui header">Gesamtpreis: </h4>
+        € {{ order.total_amount }},-
+      </div>
+
+     <!-- <div class="five wide column">
+      <h4 class="ui header">Lieferadresse: {{order?.user_id}}</h4>
+      <div *ngFor="let user of order.user_id">
+        Adresse: {{ user.street}}, , {{ user.street_nr }}
+      </div>-->
+
+    </div>
+
+
+
+
+
+    <div class="column">
+      Satus ändern zu:
+      <select class="ui dropdown" (change)="changeState($event.target.value)">
+        <option [ngValue]="offen">Offen</option>
+        <option [ngValue]="bezahlt">Bezahlt</option>
+        <option [ngValue]="versendet">Versendet</option>
+        <option [ngValue]="storniert">Storniert</option>
+      </select>
+    </div>
+  </div>
+
+<!--<ng container>
+   <div *ngFor="let status of order.statuses">
+    <div class="column">
+      Satus ändern zu:
+      <select class="ui dropdown" (change)="changeState($event.target.value)">
+        <option> {{status.type}}</option>
+      </select>
+
+  <div class="sixteen wide column">
+    <h3 class="ui header">Beschreibung</h3>
+    <p>{{status.description}}</p>
+  </div>
+    </div>
+</ng>-->
+  <div class="sixteen wide column">
+    <div class="ui small images">
+    </div>
+  </div>
+</div>

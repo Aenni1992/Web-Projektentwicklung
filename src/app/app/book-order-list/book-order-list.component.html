@@ -1,0 +1,10 @@
+<div class="ui middle aligned selection divided list">
+  <ng-container *ngFor="let order of orders">
+    <a class="bs-book-order-item item"
+       [order]="order"
+       [routerLink]="order.id" >
+    </a>
+
+
+  </ng-container>
+</div>

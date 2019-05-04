@@ -8,57 +8,55 @@ import {AuthService} from "../shares/authentication.service";
 import {OrderFactory} from "../shares/order-factory";
 
 @Component({
-  selector: 'bs-book-basket',
-  templateUrl: './book-basket.component.html',
-  styles: []
+    selector: 'bs-book-basket',
+    templateUrl: './book-basket.component.html',
+    styles: []
 })
 export class BookBasketComponent implements OnInit {
 
-  booksOrdered:Book[] = [];
-  bruttoPrice:number = 0;
-  books:any;
-  order = OrderFactory.empty();
+    booksOrdered:Book[] = [];
+    bruttoPrice:number = 0;
+    books:any;
+    order = OrderFactory.empty();
+    total_amount:number = 0;
 
     book:Book = BookFactory.empty();
 
-  constructor(private bs:BookStoreService, public as:AuthService) { }
+    constructor(private bs:BookStoreService, public as:AuthService) { }
 
-  ngOnInit() {
-      // holen aus localstorage
-      // umwandeln in array
-      const basketString = localStorage.getItem('basket');
-      const basket = JSON.parse(basketString)
-      this.bs.getAll().subscribe(res => this.books = res);
+    ngOnInit() {
+        // holen aus localstorage
+        // umwandeln in array
+        const basketString = localStorage.getItem('basket');
+        const basket = JSON.parse(basketString)
+        this.bs.getAll().subscribe(res => this.books = res);
 
-      // array durchgehen
-      // für jedes item
-      basket.forEach((bookOrder:BookOrderModel) => {
-        this.bs.getSingle(bookOrder.isbn).subscribe(
-            bookDetails => {
-              this.booksOrdered.push({
-                  ...bookDetails,
-                  amount: bookOrder.amount
-              })
+        // array durchgehen
+        // für jedes item
+        basket.forEach((bookOrder:BookOrderModel) => {
+            this.bs.getSingle(bookOrder.isbn).subscribe(
+                bookDetails => {
+                    this.booksOrdered.push({
+                        ...bookDetails,
+                        amount: bookOrder.amount
+                    })
 
-                // Preis aufadieren
-                this.bruttoPrice += bookDetails.price;
-            }
-
-
-        );
-        // HIER NICHTS MEHR MACHEN WEIL ASYNCRON
-
-      })
-      // details vom server holen
+                    // Preis aufadieren
+                    // this.bruttoPrice += bookDetails.price;
+                }
 
 
-      // speichern in booksOrdered
+            );
+            // HIER NICHTS MEHR MACHEN WEIL ASYNCRON
 
-  }
+        })
+        // details vom server holen
 
-  getNettoPrice() {
-    return this.bruttoPrice * 0.8;
-  }
+
+        // speichern in booksOrdered
+
+    }
+
 
     removeItemFromBasket(book:Book) {
         if (confirm('Buch wirklich löschen?')) {
@@ -74,11 +72,10 @@ export class BookBasketComponent implements OnInit {
         // hier array
 
         // schauen ob bookorder mit bookid existiert wenn ja amount erhöhen sonst appenden
-       // order.push({isbn: book.isbn, amount:1})
+        // order.push({isbn: book.isbn, amount:1})
 
         let id = 1;
-        let price = 0;
-        let taxes =price * 0.1;
+        let taxes = this.total_amount * 0.1;
         let bookIds = [];
 
 
@@ -86,21 +83,28 @@ export class BookBasketComponent implements OnInit {
 
         for(let i =0; i< this.books.length; i++){
             for (let j =0; j < basket.length; j++){
-                if(this.books[i].isbn == basket[j]){
-                    price += this.books[i].price;
-                    bookIds.push(this.books[i]);
+                if(this.books[i] == basket[j]){
+                    this.total_amount = basket[j].price;
+                    bookIds.push(this.total_amount);
+                    console.log(this.total_amount = 20);
+                    //Werte schauen
                 }
             }
         }
+
         let date = new Date();
-      // const order:Order = {id, currentUser, date, price, taxes, bookIds  };
+        // const order:Order = {id, currentUser, date, price, taxes, bookIds  };
 
-       const order:Order = OrderFactory.fromObject(id, currentUser, date, price, taxes, bookIds );
+        const order:Order = OrderFactory.fromObject(id, currentUser, date, this.total_amount, taxes, bookIds );
 
-        // in die Datenbank senden
+        //in die Datenbank senden
         this.bs.createOrder(order).subscribe(res => {
             this.order = OrderFactory.empty();
         });
+
+
+
+        console.log(order);
 
 
     }
