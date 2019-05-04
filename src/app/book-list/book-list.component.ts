@@ -1,6 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import { Author, Book, Image } from '../shares/book';
+import { Book } from '../shares/book';
 import {BookStoreService} from "../shares/book-store.service";
+import {BookOrderModel} from "../shares/book-order.model";
 
 @Component({
   selector: 'bs-book-list',
@@ -27,12 +28,18 @@ export class BookListComponent implements OnInit {
         // wenn was da
         // umwandeln
 
-        const basket = basketString && basketString.length > 0 ? JSON.parse(basketString) : [];
+        const basket:BookOrderModel[] = basketString && basketString.length > 0 ? JSON.parse(basketString) : [];
 
         // hier array
 
+        let existingOrderItem = basket.find((bookOrderModel:BookOrderModel) => bookOrderModel.isbn === book.isbn);
         // schauen ob bookorder mit bookid existiert wenn ja amount erhöhen sonst appenden
-        basket.push({isbn: book.isbn, amount:1})
+
+        if (existingOrderItem) {
+            existingOrderItem.amount += 1;
+        } else {
+            basket.push({isbn: book.isbn, amount: 1})
+        }
 
         const newBasketString = JSON.stringify(basket);
         // zurückspeichern

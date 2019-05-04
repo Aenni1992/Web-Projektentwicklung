@@ -22,6 +22,14 @@ export class BookStoreService {
   getSingle(isbn) : Observable<Book>{
       return this.http.get(`${this.api}/book/${isbn}`).pipe(retry(3)).pipe(catchError(this.errorHandler));
   }
+
+    getSingleByID(id) : Observable<Book>{
+        return this.http.get(`${this.api}/book/${id}`).pipe(retry(3)).pipe(catchError(this.errorHandler));
+    }
+
+    getSingleOrder(id) : Observable<Order>{
+        return this.http.get(`${this.api}/order/${id}`).pipe(retry(3)).pipe(catchError(this.errorHandler));
+    }
       //return this.books.find(book =>book.isbn == isbn);  //Error-Function
       //(book) =>{if(book.isbn === isbn){  //Variante wie ich wie ich die Error-Function auch schreiben kann
         //  return book
@@ -56,6 +64,11 @@ export class BookStoreService {
     createOrder (order:Order) :Observable<any>{   //any --> irgendein Datentyp wird aufgerufen
         return this.http.post(`${this.api}/order`, order).
         pipe(retry(3)).pipe(catchError(this.errorHandler));
+    }
+
+    getAllOrders() : Observable<Order[]> {
+        return this.http.get(`${this.api}/orders`)
+            .pipe(retry(3)).pipe(catchError(this.errorHandler));
     }
 }
 

@@ -6,6 +6,7 @@ import {BookFactory} from "../shares/book-factory";
 import {Order} from "../shares/order";
 import {AuthService} from "../shares/authentication.service";
 import {OrderFactory} from "../shares/order-factory";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'bs-book-basket',
@@ -16,20 +17,19 @@ export class BookBasketComponent implements OnInit {
 
     booksOrdered:Book[] = [];
     bruttoPrice:number = 0;
-    books:any;
-    order = OrderFactory.empty();
+    order:Order = OrderFactory.empty();
     total_amount:number = 0;
 
     book:Book = BookFactory.empty();
 
-    constructor(private bs:BookStoreService, public as:AuthService) { }
+    constructor(private bs:BookStoreService, public as:AuthService, private route : ActivatedRoute,
+                private router: Router,) { }
 
     ngOnInit() {
         // holen aus localstorage
         // umwandeln in array
         const basketString = localStorage.getItem('basket');
-        const basket = JSON.parse(basketString)
-        this.bs.getAll().subscribe(res => this.books = res);
+        const basket:BookOrderModel[] = JSON.parse(basketString) || [];
 
         // array durchgehen
         // für jedes item
@@ -37,76 +37,115 @@ export class BookBasketComponent implements OnInit {
             this.bs.getSingle(bookOrder.isbn).subscribe(
                 bookDetails => {
                     this.booksOrdered.push({
+                        //... hol mir die Daten vom Buch
                         ...bookDetails,
                         amount: bookOrder.amount
                     })
 
                     // Preis aufadieren
-                    // this.bruttoPrice += bookDetails.price;
+                     this.bruttoPrice += bookDetails.price;
                 }
 
 
             );
-            // HIER NICHTS MEHR MACHEN WEIL ASYNCRON
 
         })
-        // details vom server holen
-
-
-        // speichern in booksOrdered
 
     }
 
 
     removeItemFromBasket(book:Book) {
         if (confirm('Buch wirklich löschen?')) {
-            this.bs.remove(book.isbn);
+            this.booksOrdered.splice(this.booksOrdered.lastIndexOf(book), 1);
+
+            const localState:BookOrderModel[] = this.booksOrdered.map((bookOrder:Book) => ({
+                isbn: bookOrder.isbn,
+                amount: bookOrder.amount
+            }));
+
+            localStorage.setItem('basket', JSON.stringify(localState));
         }
     }
 
-    addToOrder(){
+  /*  increaseAmount(book:Book){
 
-        const basketString = localStorage.getItem('basket');
-        const basket = JSON.parse(basketString);
+        this.booksOrdered = JSON.parse(localStorage.getItem('basket'));
 
-        // hier array
+        for(var i in this.booksOrdered){
+            if(this.booksOrdered[i].book:Book == book){
+                this.booksOrdered[i].amount++;
+            }
 
-        // schauen ob bookorder mit bookid existiert wenn ja amount erhöhen sonst appenden
-        // order.push({isbn: book.isbn, amount:1})
+        }
+        localStorage.setItem('basket', JSON.stringify(this.booksOrdered));
+
+    }*/
+
+    addToOrder(){ //order erstellen
 
         let id = 1;
-        let taxes = this.total_amount * 0.1;
-        let bookIds = [];
+        let order_item = [];
 
 
         let currentUser = this.as.getCurrentUserId();
 
-        for(let i =0; i< this.books.length; i++){
-            for (let j =0; j < basket.length; j++){
-                if(this.books[i] == basket[j]){
-                    this.total_amount = basket[j].price;
-                    bookIds.push(this.total_amount);
-                    console.log(this.total_amount = 20);
-                    //Werte schauen
-                }
-            }
+        for(let book of this.booksOrdered){
+            this.total_amount += book.price;
+            //pushen die ISBN vom Book
+            order_item.push(book.isbn);
+            console.log(this.total_amount);
+                    //Werte anschauen
+
         }
+        let taxes = this.total_amount * 0.1;
+
 
         let date = new Date();
         // const order:Order = {id, currentUser, date, price, taxes, bookIds  };
 
-        const order:Order = OrderFactory.fromObject(id, currentUser, date, this.total_amount, taxes, bookIds );
+        const addOrder:Order = OrderFactory.fromObject(id, currentUser, date, this.total_amount, taxes, order_item );
 
         //in die Datenbank senden
-        this.bs.createOrder(order).subscribe(res => {
+        this.bs.createOrder(addOrder).subscribe(res => {
             this.order = OrderFactory.empty();
+            this.booksOrdered = [];
+            localStorage.removeItem('basket');
         });
-
-
-
-        console.log(order);
-
+        console.log(addOrder);
 
     }
 
+    checkLogin() {
+        if (this.as.isLoggedIn()) {
+          this.addToOrder();
+
+        } else  {
+            confirm('Bitte anmelden, um etwas zu bestellen.')
+            this.router.navigate(['/login']);
+        }
+    }
+
 }
+/*const val = this.loginForm.value;
+if (val.username && val.password) {
+    this.authService.login(val.username, val.password).subscribe(res => {
+        const resObj = res as Response;
+        if (resObj.response === "success") {
+            this.authService.setLocalStorage(resObj.result.token);
+            this.router.navigateByUrl('/');
+
+// Local storage holen ==> return string
+const basketString = localStorage.getItem('basket');
+// wenn was da
+// umwandeln
+
+const basket = basketString && basketString.length > 0 ? JSON.parse(basketString) : [];
+
+// hier array
+
+// schauen ob bookorder mit bookid existiert wenn ja amount erhöhen sonst appenden
+basket.push({isbn: book.isbn, amount:1})
+
+const newBasketString = JSON.stringify(basket);
+// zurückspeichern
+localStorage.setItem('basket', newBasketString)*/

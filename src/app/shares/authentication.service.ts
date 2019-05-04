@@ -82,6 +82,14 @@ export class AuthService {
 
     public isAdmin(){
         return !isNullOrUndefined(localStorage.getItem("admin"));
+
+   /*     if (this.isLoggedIn()){
+            if (this.getAdminInfo() == 1){
+                return true;
+            }
+            return false;
+        }
+        return false;*/
     }
 
     isLoggedOut() {

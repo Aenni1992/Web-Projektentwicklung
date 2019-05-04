@@ -4,16 +4,27 @@
      [book]="book"
      [routerLink]="book.isbn" >
   </a>
+
+    <div class="column">
+      <div class="row">
+        <div class="column">
+          <p>
+    <span>Anzahl: {{book?.amount}}</span>
+
+    </div>
+
     <button class="ui tiny blue labeled icon button"
             (click)="removeItemFromBasket(book)" >
       <i class="remove icon"></i>Buch entfernen
     </button>
+      </div>
+    </div>
   </ng-container>
 
   <ng-container>
     <div>
   <button class="ui tiny yellow labeled icon button"
-          (click)="addToOrder()" >
+          (click)="checkLogin()" >
     <i class="icon"></i>Bestellen
   </button>
     </div>

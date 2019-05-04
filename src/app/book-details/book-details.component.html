@@ -8,21 +8,25 @@
     <h3 class="ui header">{{ book.subtitle }}</h3>
     <div class="ui divider"></div>
     <div class="ui grid">
-      <div class="four wide column">
+      <div class="five wide column">
         <h4 class="ui header">Autoren</h4>
         <span *ngFor="let author of book.authors; last as l">
          {{ author.firstName }} {{ author.lastName }}<span *ngIf="!l">, </span>
        </span>
       </div>
-      <div class="four wide column">
+      <div class="five wide column">
         <h4 class="ui header">ISBN</h4>
         {{ book.isbn }}
       </div>
-      <div class="four wide column">
+      <div class="five wide column">
         <h4 class="ui header">Erschienen</h4>
         {{ book.published }}
       </div>
-      <div class="four wide column">
+      <div class="five wide column">
+        <h4 class="ui header">Preis</h4>
+        € {{ book.price }},-
+      </div>
+      <div class="five wide column">
         <h4 class="ui header">Rating</h4>
         <i *ngFor="let r of getRating(book.rating)" class="yellow star icon"></i>
       </div>
@@ -41,6 +45,11 @@
 
 <button [routerLink]="'/books'" class="ui red button">
   Zurück zur Buchliste
+</button>
+
+<button class="ui tiny yellow labeled icon button"
+        (click)="addToBasket(book)">
+  <i class="cart icon"></i> Zum Warenkorb
 </button>
 
 
